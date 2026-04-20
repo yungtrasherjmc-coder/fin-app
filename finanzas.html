@@ -3,500 +3,1488 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#0F172A">
+<meta name="theme-color" content="#0A0F1E">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="FinControl">
 <link rel="manifest" href="manifest.json">
 <title>FinControl</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
-  :root {
-    --bg: #0F172A;
-    --surface: #1E293B;
-    --surface2: #263548;
-    --border: #334155;
-    --green: #22C55E;
-    --green-dim: #16A34A;
-    --green-bg: rgba(34,197,94,0.12);
-    --red: #F87171;
-    --red-dim: #DC2626;
-    --red-bg: rgba(248,113,113,0.12);
-    --accent: #38BDF8;
-    --yellow: #FBBF24;
-    --yellow-bg: rgba(251,191,36,0.12);
-    --text: #F1F5F9;
-    --text-muted: #94A3B8;
-    --text-dim: #64748B;
-    --radius: 16px;
-    --radius-sm: 10px;
-    --nav-h: 72px;
-  }
+:root {
+  --bg:        #0A0F1E;
+  --bg2:       #0F1729;
+  --surface:   #151E35;
+  --surface2:  #1C2741;
+  --surface3:  #243050;
+  --border:    #2A3A5C;
+  --border2:   #1F2E4A;
+  --green:     #10B981;
+  --green-l:   #34D399;
+  --green-d:   #059669;
+  --green-bg:  rgba(16,185,129,.1);
+  --green-br:  rgba(16,185,129,.25);
+  --red:       #F43F5E;
+  --red-l:     #FB7185;
+  --red-d:     #E11D48;
+  --red-bg:    rgba(244,63,94,.1);
+  --red-br:    rgba(244,63,94,.25);
+  --blue:      #3B82F6;
+  --blue-l:    #60A5FA;
+  --blue-bg:   rgba(59,130,246,.1);
+  --blue-br:   rgba(59,130,246,.25);
+  --purple:    #8B5CF6;
+  --purple-bg: rgba(139,92,246,.1);
+  --purple-br: rgba(139,92,246,.25);
+  --yellow:    #F59E0B;
+  --yellow-l:  #FCD34D;
+  --yellow-bg: rgba(245,158,11,.1);
+  --yellow-br: rgba(245,158,11,.25);
+  --text:      #F0F4FF;
+  --text2:     #A8B8D8;
+  --text3:     #5A6E90;
+  --r:         14px;
+  --rs:        10px;
+  --rx:        20px;
+  --nav:       70px;
+  --safe:      env(safe-area-inset-bottom, 0px);
+}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 16px; overscroll-behavior: none; }
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{height:100%;background:var(--bg)}
+body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:15px;line-height:1.5;overscroll-behavior:none;-webkit-font-smoothing:antialiased}
 
-  #app { height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
-  .screen { display: none; flex: 1; overflow-y: auto; padding: 20px 16px calc(var(--nav-h) + 20px); }
-  .screen.active { display: block; }
+/* ── LAYOUT ── */
+#app{height:100dvh;display:flex;flex-direction:column;overflow:hidden;position:relative}
+.screen{display:none;flex:1;overflow-y:auto;overflow-x:hidden;padding:0 0 calc(var(--nav) + var(--safe) + 16px)}
+.screen.active{display:block}
 
-  /* NAV */
-  nav {
-    position: fixed; bottom: 0; left: 0; right: 0;
-    height: var(--nav-h);
-    background: rgba(30,41,59,0.96);
-    backdrop-filter: blur(20px);
-    border-top: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: space-around;
-    z-index: 100; padding-bottom: env(safe-area-inset-bottom);
-  }
-  .nav-btn {
-    display: flex; flex-direction: column; align-items: center; gap: 4px;
-    background: none; border: none; color: var(--text-dim);
-    font-family: inherit; font-size: 11px; font-weight: 600;
-    padding: 8px 20px; border-radius: 12px;
-    transition: all 0.2s; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;
-  }
-  .nav-btn svg { width: 22px; height: 22px; stroke-width: 2; }
-  .nav-btn.active { color: var(--accent); }
-  .nav-btn.active svg { filter: drop-shadow(0 0 6px var(--accent)); }
+/* ── NAV ── */
+nav{
+  position:fixed;bottom:0;left:0;right:0;
+  height:calc(var(--nav) + var(--safe));
+  padding-bottom:var(--safe);
+  background:rgba(15,23,41,.95);
+  backdrop-filter:blur(24px) saturate(180%);
+  -webkit-backdrop-filter:blur(24px) saturate(180%);
+  border-top:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:space-around;
+  z-index:100;
+}
+.nb{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  background:none;border:none;color:var(--text3);
+  font-family:inherit;font-size:10px;font-weight:600;
+  padding:8px 14px;border-radius:12px;cursor:pointer;
+  text-transform:uppercase;letter-spacing:.5px;
+  transition:color .2s;position:relative;
+}
+.nb svg{width:21px;height:21px;stroke-width:1.8;transition:all .2s;flex-shrink:0}
+.nb.active{color:var(--blue-l)}
+.nb.active svg{filter:drop-shadow(0 0 8px rgba(96,165,250,.6))}
+.nb-dot{
+  position:absolute;top:4px;right:10px;width:6px;height:6px;
+  border-radius:50%;background:var(--red);
+  border:1.5px solid var(--bg2);display:none;
+}
+.nb-dot.show{display:block}
 
-  /* PAGE HEADER */
-  .page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; }
-  .page-title { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
-  .page-date { font-size: 12px; color: var(--text-muted); font-family: 'DM Mono', monospace; }
-  .greeting { font-size: 13px; color: var(--text-muted); margin-bottom: 2px; }
-  .app-name { font-size: 26px; font-weight: 800; letter-spacing: -1px; }
-  .app-name span { color: var(--accent); }
+/* ── SCREEN HEADER ── */
+.sh{padding:20px 18px 16px;position:sticky;top:0;z-index:10;
+  background:linear-gradient(to bottom,var(--bg) 80%,transparent)}
+.sh-row{display:flex;align-items:center;justify-content:space-between}
+.sh-title{font-size:22px;font-weight:800;letter-spacing:-.6px}
+.sh-sub{font-size:13px;color:var(--text3);margin-top:1px}
+.sh-actions{display:flex;gap:8px;align-items:center}
 
-  /* BALANCE */
-  .balance-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-  .balance-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 10px; text-align: center; }
-  .balance-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
-  .balance-value { font-size: 15px; font-weight: 700; font-family: 'DM Mono', monospace; }
-  .balance-value.green { color: var(--green); }
-  .balance-value.red { color: var(--red); }
-  .balance-value.accent { color: var(--accent); }
+/* ── PADDING WRAPPER ── */
+.px{padding-left:18px;padding-right:18px}
 
-  .section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); margin-bottom: 10px; }
+/* ── TYPOGRAPHY ── */
+.label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:8px;display:block}
 
-  /* QUICK ACTIONS */
-  .quick-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-  .quick-btn { padding: 14px; border-radius: var(--radius-sm); border: none; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px; letter-spacing: 0.3px; }
-  .quick-btn:active { transform: scale(0.96); }
-  .quick-btn.sale { background: var(--green-bg); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
-  .quick-btn.expense-q { background: var(--red-bg); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
-  .quick-btn svg { width: 18px; height: 18px; }
+/* ── BALANCE CARDS ── */
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 18px;margin-bottom:4px}
+.kpi{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);padding:16px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:2px 2px 0 0}
+.kpi.green::before{background:linear-gradient(90deg,var(--green),var(--green-l))}
+.kpi.red::before{background:linear-gradient(90deg,var(--red),var(--red-l))}
+.kpi.blue::before{background:linear-gradient(90deg,var(--blue),var(--blue-l))}
+.kpi.yellow::before{background:linear-gradient(90deg,var(--yellow),var(--yellow-l))}
+.kpi-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin-bottom:6px}
+.kpi-val{font-size:20px;font-weight:800;font-family:'JetBrains Mono',monospace;letter-spacing:-.5px}
+.kpi-val.green{color:var(--green-l)}
+.kpi-val.red{color:var(--red-l)}
+.kpi-val.blue{color:var(--blue-l)}
+.kpi-val.yellow{color:var(--yellow-l)}
+.kpi-wide{grid-column:1/-1}
+.kpi-wide .kpi-val{font-size:26px}
 
-  /* PRODUCT LIST ITEM (home stock) */
-  .product-list-item { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 8px; }
-  .pli-info { flex: 1; }
-  .pli-name { font-weight: 600; font-size: 15px; }
-  .pli-meta { font-size: 12px; color: var(--text-muted); font-family: 'DM Mono', monospace; margin-top: 2px; }
-  .pli-stock-controls { display: flex; align-items: center; gap: 10px; }
-  .stock-ctrl-btn { width: 34px; height: 34px; border-radius: 8px; background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
-  .stock-ctrl-btn:active { transform: scale(0.9); }
-  .pli-stock-val { font-size: 16px; font-weight: 700; font-family: 'DM Mono', monospace; min-width: 28px; text-align: center; }
-  .pli-stock-val.low { color: var(--red); }
+/* ── SECTION ── */
+.section{padding:0 18px;margin-top:20px}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.section-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text3)}
+.section-action{font-size:13px;font-weight:600;color:var(--blue-l);background:none;border:none;cursor:pointer;padding:4px 0;font-family:inherit}
 
-  /* PRODUCT GRID (sell) */
-  .sell-hint { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
-  .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .product-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 14px; cursor: pointer; transition: all 0.15s; position: relative; overflow: hidden; user-select: none; }
-  .product-card:active { transform: scale(0.96); }
-  .product-card.low-stock { border-color: var(--red-dim); background: color-mix(in srgb, var(--surface) 85%, var(--red-dim)); }
-  .product-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.04), transparent); pointer-events: none; }
-  .product-name { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
-  .product-price { font-size: 18px; font-weight: 700; color: var(--green); font-family: 'DM Mono', monospace; }
-  .product-stock { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
-  .product-stock.low { color: var(--red); font-weight: 600; }
-  .stock-badge { position: absolute; top: 10px; right: 10px; background: var(--border); border-radius: 20px; padding: 2px 8px; font-size: 11px; font-weight: 700; font-family: 'DM Mono', monospace; }
-  .stock-badge.low { background: var(--red-bg); color: var(--red); }
+/* ── ACTIVITY FEED ── */
+.feed-item{
+  display:flex;align-items:center;gap:12px;
+  padding:13px 0;border-bottom:1px solid var(--border2);
+  transition:opacity .15s;
+}
+.feed-item:last-child{border-bottom:none}
+.feed-icon{
+  width:40px;height:40px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;flex-shrink:0;
+}
+.feed-icon.sale{background:var(--green-bg);border:1px solid var(--green-br)}
+.feed-icon.exp{background:var(--red-bg);border:1px solid var(--red-br)}
+.feed-icon.buy{background:var(--blue-bg);border:1px solid var(--blue-br)}
+.feed-info{flex:1;min-width:0}
+.feed-desc{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.feed-meta{font-size:11px;color:var(--text3);margin-top:2px;font-family:'JetBrains Mono',monospace}
+.feed-amount{font-size:15px;font-weight:700;font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.feed-amount.pos{color:var(--green-l)}
+.feed-amount.neg{color:var(--red-l)}
+.feed-amount.neu{color:var(--blue-l)}
 
-  /* MODAL */
-  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 200; align-items: flex-end; justify-content: center; }
-  .modal-overlay.open { display: flex; }
-  .modal { background: var(--surface); border-radius: 24px 24px 0 0; width: 100%; max-width: 480px; padding: 24px 20px 36px; border: 1px solid var(--border); border-bottom: none; animation: slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1); }
-  @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-  .modal-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 20px; }
-  .modal-product-name { font-size: 20px; font-weight: 700; text-align: center; margin-bottom: 4px; }
-  .modal-product-price { font-size: 14px; color: var(--text-muted); text-align: center; margin-bottom: 24px; font-family: 'DM Mono', monospace; }
-  .qty-control { display: flex; align-items: center; justify-content: center; gap: 24px; margin-bottom: 24px; }
-  .qty-btn { width: 52px; height: 52px; border-radius: 50%; background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-size: 22px; font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s; }
-  .qty-btn:active { transform: scale(0.9); background: var(--border); }
-  #modal-qty { font-size: 40px; font-weight: 700; font-family: 'DM Mono', monospace; width: 80px; text-align: center; }
-  .modal-total { background: var(--bg); border-radius: var(--radius-sm); padding: 14px; text-align: center; margin-bottom: 20px; border: 1px solid var(--border); }
-  .modal-total-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 4px; }
-  .modal-total-value { font-size: 32px; font-weight: 700; font-family: 'DM Mono', monospace; color: var(--green); }
-  .btn-confirm { width: 100%; padding: 18px; background: var(--green); color: #0F172A; font-family: inherit; font-size: 16px; font-weight: 700; border: none; border-radius: var(--radius); cursor: pointer; transition: all 0.15s; letter-spacing: 0.3px; }
-  .btn-confirm:active { transform: scale(0.97); background: var(--green-dim); }
-  .btn-cancel { width: 100%; padding: 14px; background: transparent; color: var(--text-muted); font-family: inherit; font-size: 15px; font-weight: 600; border: none; cursor: pointer; margin-top: 8px; }
+/* ── STOCK ROW ── */
+.stock-row{
+  display:flex;align-items:center;gap:12px;
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:var(--r);padding:14px;margin-bottom:8px;
+  transition:border-color .2s;
+}
+.stock-row.low{border-color:var(--red-br)}
+.stock-badge2{
+  min-width:44px;height:44px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:17px;font-weight:800;font-family:'JetBrains Mono',monospace;
+  background:var(--surface2);flex-shrink:0;
+}
+.stock-badge2.low{background:var(--red-bg);color:var(--red-l)}
+.stock-info{flex:1;min-width:0}
+.stock-name{font-size:15px;font-weight:700}
+.stock-meta{font-size:12px;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-top:2px}
 
-  /* EXPENSE FORM */
-  .form-group { margin-bottom: 14px; }
-  .form-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); margin-bottom: 8px; display: block; }
-  .form-input { width: 100%; padding: 16px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-family: inherit; font-size: 16px; transition: border-color 0.2s; outline: none; }
-  .form-input:focus { border-color: var(--accent); }
-  .form-input::placeholder { color: var(--text-dim); }
-  .btn-expense { width: 100%; padding: 18px; background: var(--red-bg); color: var(--red); border: 1px solid var(--red-dim); border-radius: var(--radius); font-family: inherit; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.15s; letter-spacing: 0.3px; }
-  .btn-expense:active { transform: scale(0.97); }
+/* ── PRODUCT SELL GRID ── */
+.prod-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 18px}
+.prod-card{
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:var(--r);padding:16px;
+  cursor:pointer;transition:all .15s;
+  position:relative;overflow:hidden;user-select:none;
+}
+.prod-card:active{transform:scale(.95);background:var(--surface2)}
+.prod-card.low{border-color:var(--red-br)}
+.prod-card.zero{opacity:.45;cursor:not-allowed}
+.prod-card-name{font-size:14px;font-weight:700;margin-bottom:4px}
+.prod-card-price{font-size:20px;font-weight:800;color:var(--green-l);font-family:'JetBrains Mono',monospace}
+.prod-card-stock{font-size:11px;color:var(--text3);margin-top:6px;font-weight:600}
+.prod-card-stock.low{color:var(--red-l)}
+.sbadge{
+  position:absolute;top:10px;right:10px;
+  background:var(--surface3);border-radius:8px;
+  padding:2px 7px;font-size:11px;font-weight:700;
+  font-family:'JetBrains Mono',monospace;color:var(--text2);
+}
+.sbadge.low{background:var(--red-bg);color:var(--red-l)}
 
-  /* TOAST */
-  .toast { position: fixed; top: 24px; left: 50%; transform: translateX(-50%) translateY(-120px); background: var(--green); color: #0F172A; padding: 14px 24px; border-radius: 100px; font-weight: 700; font-size: 14px; z-index: 500; transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1); white-space: nowrap; box-shadow: 0 8px 32px rgba(34,197,94,0.4); }
-  .toast.show { transform: translateX(-50%) translateY(0); }
-  .toast.error { background: var(--red); box-shadow: 0 8px 32px rgba(248,113,113,0.4); }
+/* ── PACK PILL ── */
+.packs-row{display:flex;gap:8px;flex-wrap:wrap;padding:0 18px;margin-bottom:10px}
+.pack-pill{
+  display:flex;align-items:center;gap:6px;
+  background:var(--purple-bg);border:1px solid var(--purple-br);
+  border-radius:100px;padding:8px 14px;
+  cursor:pointer;transition:all .15s;user-select:none;
+  font-size:13px;font-weight:700;color:var(--purple);
+}
+.pack-pill:active{transform:scale(.95)}
+.pack-pill .pack-del{
+  width:16px;height:16px;border-radius:50%;
+  background:rgba(139,92,246,.3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;color:var(--purple);
+  cursor:pointer;flex-shrink:0;
+}
 
-  /* HISTORY */
-  .stat-pill { padding: 4px 10px; border-radius: 100px; font-size: 11px; font-weight: 700; font-family: 'DM Mono', monospace; }
-  .stat-pill.green { background: var(--green-bg); color: var(--green); }
-  .stat-pill.red { background: var(--red-bg); color: var(--red); }
-  .stat-row { display: flex; gap: 8px; margin-top: 4px; }
-  .day-group { margin-bottom: 20px; }
-  .day-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); padding: 8px 0 10px; border-bottom: 1px solid var(--border); margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
-  .tx-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(51,65,85,0.5); }
-  .tx-item:last-child { border-bottom: none; }
-  .tx-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
-  .tx-icon.income { background: var(--green-bg); }
-  .tx-icon.expense { background: var(--red-bg); }
-  .tx-info { flex: 1; min-width: 0; }
-  .tx-desc { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .tx-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; font-family: 'DM Mono', monospace; }
-  .tx-amount { font-size: 15px; font-weight: 700; font-family: 'DM Mono', monospace; flex-shrink: 0; }
-  .tx-amount.income { color: var(--green); }
-  .tx-amount.expense { color: var(--red); }
-  .profit-chip { display: inline-flex; align-items: center; gap: 4px; background: var(--yellow-bg); color: var(--yellow); border-radius: 20px; padding: 2px 8px; font-size: 11px; font-weight: 700; font-family: 'DM Mono', monospace; }
-  .empty-state { text-align: center; padding: 48px 20px; color: var(--text-dim); font-size: 14px; }
-  .empty-icon { font-size: 40px; margin-bottom: 12px; }
+/* ── INV CARD ── */
+.inv-card{
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:var(--r);padding:16px;margin-bottom:10px;
+}
+.inv-card-top{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.inv-avatar{
+  width:44px;height:44px;border-radius:12px;
+  background:var(--blue-bg);border:1px solid var(--blue-br);
+  display:flex;align-items:center;justify-content:center;font-size:20px;
+}
+.inv-card-info{flex:1}
+.inv-card-name{font-size:16px;font-weight:800}
+.inv-card-meta{font-size:12px;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-top:2px}
+.inv-stock-num{font-size:28px;font-weight:900;font-family:'JetBrains Mono',monospace}
+.inv-stock-num.low{color:var(--red-l)}
+.margin-bar{height:4px;background:var(--surface3);border-radius:2px;margin:10px 0 14px;overflow:hidden}
+.margin-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--green-l));border-radius:2px;transition:width .4s}
+.inv-btns{display:flex;gap:8px}
 
-  /* RIPPLE */
-  @keyframes ripple { 0% { transform: scale(0); opacity: 0.4; } 100% { transform: scale(4); opacity: 0; } }
-  .ripple-effect { position: absolute; border-radius: 50%; background: rgba(255,255,255,0.2); animation: ripple 0.5s linear; pointer-events: none; width: 60px; height: 60px; margin: -30px; }
+/* ── BUTTONS ── */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;padding:16px;border-radius:var(--r);border:none;
+  font-family:inherit;font-size:15px;font-weight:700;
+  cursor:pointer;transition:all .15s;letter-spacing:.2px;
+  -webkit-appearance:none;
+}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:active{background:var(--blue-l)}
+.btn-green{background:var(--green);color:#fff}
+.btn-green:active{background:var(--green-l)}
+.btn-red{background:var(--red-bg);color:var(--red-l);border:1px solid var(--red-br)}
+.btn-outline{background:transparent;color:var(--blue-l);border:1px solid var(--blue-br)}
+.btn-ghost{background:transparent;color:var(--text3);padding:14px}
+.btn-sm{padding:10px 14px;font-size:13px;width:auto;border-radius:var(--rs)}
+.btn-icon{width:40px;height:40px;padding:0;border-radius:var(--rs);flex-shrink:0}
+.btn svg{width:18px;height:18px;stroke-width:2}
 
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+/* ── FORMS ── */
+.form-group{margin-bottom:14px}
+.form-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin-bottom:8px;display:block}
+.form-input{
+  width:100%;padding:15px 16px;
+  background:var(--surface2);border:1.5px solid var(--border);
+  border-radius:var(--r);color:var(--text);
+  font-family:'Inter',inherit;font-size:16px;outline:none;
+  transition:border-color .2s,background .2s;
+  -webkit-appearance:none;
+}
+.form-input:focus{border-color:var(--blue);background:var(--surface3)}
+.form-input::placeholder{color:var(--text3)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form-hint{font-size:12px;color:var(--text3);margin-top:6px}
+
+/* ── MODAL ── */
+.overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(5,10,25,.8);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  z-index:200;align-items:flex-end;justify-content:center;
+}
+.overlay.open{display:flex}
+.modal{
+  background:var(--bg2);border-radius:24px 24px 0 0;
+  width:100%;max-width:520px;
+  padding:0 20px calc(32px + var(--safe));
+  border:1px solid var(--border);border-bottom:none;
+  animation:slideUp .32s cubic-bezier(.34,1.3,.64,1);
+  max-height:90dvh;overflow-y:auto;
+}
+@keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-drag{width:36px;height:4px;background:var(--border);border-radius:2px;margin:16px auto 20px}
+.modal-title{font-size:19px;font-weight:800;letter-spacing:-.4px;margin-bottom:2px}
+.modal-sub{font-size:13px;color:var(--text3);margin-bottom:22px}
+
+/* ── QTY CONTROL ── */
+.qty-wrap{display:flex;align-items:center;justify-content:center;gap:28px;margin-bottom:22px}
+.qty-btn{
+  width:54px;height:54px;border-radius:50%;
+  background:var(--surface2);border:1.5px solid var(--border);
+  color:var(--text);font-size:24px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .15s;
+}
+.qty-btn:active{transform:scale(.88);background:var(--surface3)}
+#modal-qty{font-size:42px;font-weight:900;font-family:'JetBrains Mono',monospace;width:80px;text-align:center;letter-spacing:-2px}
+
+/* ── TOTAL BOX ── */
+.total-box{
+  background:var(--surface2);border-radius:var(--r);
+  padding:16px;text-align:center;margin-bottom:20px;
+  border:1px solid var(--green-br);
+}
+.total-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:4px;font-weight:700}
+.total-val{font-size:34px;font-weight:900;font-family:'JetBrains Mono',monospace;color:var(--green-l);letter-spacing:-1px}
+
+/* ── PACK LIST IN MODAL ── */
+.pack-list-item{
+  display:flex;align-items:center;gap:12px;
+  background:var(--surface2);border:1px solid var(--border2);
+  border-radius:var(--rs);padding:12px 14px;margin-bottom:8px;
+}
+.pack-list-info{flex:1}
+.pack-list-name{font-size:14px;font-weight:700}
+.pack-list-meta{font-size:12px;color:var(--text3);font-family:'JetBrains Mono',monospace}
+.pack-del-btn{
+  width:32px;height:32px;border-radius:8px;
+  background:var(--red-bg);border:1px solid var(--red-br);
+  color:var(--red-l);font-size:16px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+
+/* ── HISTORY ── */
+.day-block{margin-bottom:20px;padding:0 18px}
+.day-hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 0 12px;border-bottom:1px solid var(--border2);margin-bottom:4px;
+}
+.day-name{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3)}
+.day-net{font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:56px 24px 32px}
+.empty-icon{font-size:48px;margin-bottom:14px}
+.empty h3{font-size:18px;font-weight:800;letter-spacing:-.3px;margin-bottom:6px}
+.empty p{font-size:14px;color:var(--text3);margin-bottom:22px}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;top:20px;left:50%;
+  transform:translateX(-50%) translateY(-120px) scale(.9);
+  background:var(--surface);color:var(--text);
+  padding:13px 22px;border-radius:100px;
+  font-weight:700;font-size:14px;
+  z-index:999;
+  transition:transform .35s cubic-bezier(.34,1.4,.64,1),opacity .35s;
+  white-space:nowrap;
+  border:1px solid var(--border);
+  box-shadow:0 12px 40px rgba(0,0,0,.5);
+  opacity:0;
+}
+.toast.show{transform:translateX(-50%) translateY(0) scale(1);opacity:1}
+.toast.ok{border-color:var(--green-br);color:var(--green-l)}
+.toast.err{border-color:var(--red-br);color:var(--red-l)}
+.toast.info{border-color:var(--blue-br);color:var(--blue-l)}
+
+/* ── TAGS / CHIPS ── */
+.chip{
+  display:inline-flex;align-items:center;padding:3px 9px;
+  border-radius:100px;font-size:11px;font-weight:700;
+  font-family:'JetBrains Mono',monospace;
+}
+.chip-green{background:var(--green-bg);color:var(--green-l);border:1px solid var(--green-br)}
+.chip-red{background:var(--red-bg);color:var(--red-l);border:1px solid var(--red-br)}
+.chip-blue{background:var(--blue-bg);color:var(--blue-l);border:1px solid var(--blue-br)}
+.chip-yellow{background:var(--yellow-bg);color:var(--yellow-l);border:1px solid var(--yellow-br)}
+.chip-purple{background:var(--purple-bg);color:var(--purple);border:1px solid var(--purple-br)}
+
+/* ── DIVIDER ── */
+.divider{height:1px;background:var(--border2);margin:16px 0}
+
+/* ── RIPPLE ── */
+@keyframes rip{0%{transform:scale(0);opacity:.3}100%{transform:scale(5);opacity:0}}
+.rip{position:absolute;border-radius:50%;background:rgba(255,255,255,.15);animation:rip .6s ease-out;pointer-events:none;width:60px;height:60px;margin:-30px}
+
+/* ── SETTINGS SECTION ── */
+.settings-row{
+  display:flex;align-items:center;gap:14px;
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:var(--r);padding:16px;margin-bottom:10px;
+  cursor:pointer;transition:all .15s;
+}
+.settings-row:active{background:var(--surface2)}
+.settings-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.settings-info{flex:1}
+.settings-title{font-size:15px;font-weight:700}
+.settings-sub{font-size:12px;color:var(--text3);margin-top:2px}
+.settings-arrow{color:var(--text3);font-size:18px}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+/* ── SELL SECTION HEADER ── */
+.sell-section-hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 18px;margin-bottom:10px;
+}
+.sell-section-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text3)}
+
+/* ── SKELETON (loading feel) ── */
+@keyframes shimmer{0%{opacity:.5}50%{opacity:1}100%{opacity:.5}}
 </style>
 </head>
 <body>
 <div id="app">
 
-  <!-- INICIO -->
-  <div id="screen-home" class="screen active">
-    <div class="page-header">
+<!-- ══════════════════════════════
+     INICIO
+══════════════════════════════ -->
+<div id="s-home" class="screen active">
+  <div class="sh">
+    <div class="sh-row">
       <div>
-        <div class="greeting">Hola 👋</div>
-        <div class="app-name">Fin<span>Control</span></div>
+        <div style="font-size:13px;color:var(--text3);margin-bottom:2px" id="home-greeting"></div>
+        <div style="font-size:23px;font-weight:900;letter-spacing:-.7px">Fin<span style="color:var(--blue-l)">Control</span></div>
       </div>
-      <div class="page-date" id="home-date"></div>
+      <div style="font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;text-align:right" id="home-date"></div>
     </div>
-    <div class="balance-grid">
-      <div class="balance-item"><div class="balance-label">Ingresos</div><div class="balance-value green" id="bal-income">$0</div></div>
-      <div class="balance-item"><div class="balance-label">Gastos</div><div class="balance-value red" id="bal-expenses">$0</div></div>
-      <div class="balance-item"><div class="balance-label">Balance</div><div class="balance-value accent" id="bal-net">$0</div></div>
-    </div>
-    <div class="quick-actions">
-      <button class="quick-btn sale" onclick="goTo('sell')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg>
-        Nueva Venta
-      </button>
-      <button class="quick-btn expense-q" onclick="openExpenseModal()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg>
-        Anotar Gasto
-      </button>
-    </div>
-    <div class="section-label">Stock actual</div>
-    <div id="home-stock-list"></div>
   </div>
 
-  <!-- VENTA -->
-  <div id="screen-sell" class="screen">
-    <div class="page-header"><div class="page-title">Nueva Venta</div></div>
-    <p class="sell-hint">Toca un producto para vender</p>
-    <div class="product-grid" id="sell-product-grid"></div>
+  <!-- KPIs -->
+  <div class="kpi-grid">
+    <div class="kpi green">
+      <div class="kpi-label">Ingresos</div>
+      <div class="kpi-val green" id="k-income">$0</div>
+    </div>
+    <div class="kpi red">
+      <div class="kpi-label">Gastos</div>
+      <div class="kpi-val red" id="k-expenses">$0</div>
+    </div>
+    <div class="kpi yellow">
+      <div class="kpi-label">Ganancia neta</div>
+      <div class="kpi-val yellow" id="k-profit">$0</div>
+    </div>
+    <div class="kpi blue">
+      <div class="kpi-label">Costo ventas</div>
+      <div class="kpi-val blue" id="k-cogs">$0</div>
+    </div>
+    <div class="kpi blue kpi-wide">
+      <div class="kpi-label">Balance (ingresos − gastos)</div>
+      <div class="kpi-val blue" id="k-balance">$0</div>
+    </div>
   </div>
 
-  <!-- HISTORIAL -->
-  <div id="screen-history" class="screen">
-    <div class="page-header">
-      <div>
-        <div class="page-title">Historial</div>
-        <div class="stat-row" id="history-summary"></div>
+  <!-- No products state -->
+  <div id="home-empty" style="display:none">
+    <div class="empty">
+      <div class="empty-icon">📦</div>
+      <h3>Empieza aquí</h3>
+      <p>Crea tu primer producto en la sección Inventario</p>
+      <button class="btn btn-primary btn-sm" onclick="goTo('inv')" style="width:auto;margin:0 auto">Ir a Inventario →</button>
+    </div>
+  </div>
+
+  <!-- Stock rápido -->
+  <div id="home-content">
+    <div class="section">
+      <div class="section-header">
+        <span class="section-title">Stock actual</span>
+        <button class="section-action" onclick="goTo('inv')">Ver todo →</button>
+      </div>
+      <div id="home-stock"></div>
+    </div>
+
+    <!-- Actividad reciente -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-title">Actividad reciente</span>
+        <button class="section-action" onclick="goTo('hist')">Ver todo →</button>
+      </div>
+      <div id="home-feed">
+        <div class="empty" style="padding:24px 0">
+          <div style="font-size:28px;margin-bottom:6px">📊</div>
+          <p style="margin:0">Sin movimientos aún</p>
+        </div>
       </div>
     </div>
-    <div id="history-list"></div>
   </div>
-
-  <nav>
-    <button class="nav-btn active" id="nav-home" onclick="goTo('home')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 12L12 3l9 9M5 10v10a1 1 0 001 1h4v-6h4v6h4a1 1 0 001-1V10"/></svg>
-      Inicio
-    </button>
-    <button class="nav-btn" id="nav-sell" onclick="goTo('sell')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg>
-      Vender
-    </button>
-    <button class="nav-btn" id="nav-history" onclick="goTo('history')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-      Historial
-    </button>
-  </nav>
 </div>
 
-<!-- MODAL VENTA -->
-<div class="modal-overlay" id="sale-modal">
+<!-- ══════════════════════════════
+     VENDER
+══════════════════════════════ -->
+<div id="s-sell" class="screen">
+  <div class="sh">
+    <div class="sh-row">
+      <div>
+        <div class="sh-title">Vender</div>
+        <div class="sh-sub" id="sell-sub">Toca un producto o pack</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="sell-empty" class="empty" style="display:none">
+    <div class="empty-icon">🛒</div>
+    <h3>Sin productos</h3>
+    <p>Crea productos en Inventario primero</p>
+    <button class="btn btn-primary btn-sm" onclick="goTo('inv')" style="width:auto;margin:0 auto">Ir a Inventario →</button>
+  </div>
+
+  <div id="sell-content">
+    <!-- Packs/Ofertas -->
+    <div id="packs-wrap" style="display:none">
+      <div class="sell-section-hdr">
+        <span class="sell-section-title">⚡ Packs y Ofertas</span>
+        <button class="btn btn-sm btn-outline" onclick="openPackManager()" style="padding:7px 12px;font-size:12px">+ Gestionar</button>
+      </div>
+      <div class="packs-row" id="packs-row"></div>
+      <div style="height:4px"></div>
+    </div>
+
+    <!-- Productos -->
+    <div class="sell-section-hdr" style="margin-top:4px">
+      <span class="sell-section-title">📦 Productos</span>
+    </div>
+    <div class="prod-grid" id="sell-grid"></div>
+    <div style="height:8px"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     INVENTARIO
+══════════════════════════════ -->
+<div id="s-inv" class="screen">
+  <div class="sh">
+    <div class="sh-row">
+      <div>
+        <div class="sh-title">Inventario</div>
+        <div class="sh-sub" id="inv-sub">Gestiona tu stock</div>
+      </div>
+      <div class="sh-actions">
+        <button class="btn btn-primary btn-sm" onclick="openNewProduct()">+ Producto</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="inv-empty" class="empty" style="display:none">
+    <div class="empty-icon">📦</div>
+    <h3>Sin productos</h3>
+    <p>Agrega tu primer producto para empezar</p>
+    <button class="btn btn-primary" onclick="openNewProduct()" style="width:auto;margin:0 auto">+ Crear producto</button>
+  </div>
+
+  <div class="px" id="inv-list"></div>
+</div>
+
+<!-- ══════════════════════════════
+     GASTOS
+══════════════════════════════ -->
+<div id="s-exp" class="screen">
+  <div class="sh">
+    <div class="sh-row">
+      <div>
+        <div class="sh-title">Gastos</div>
+        <div class="sh-sub" id="exp-total-label">Total: $0</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="px">
+    <!-- Form -->
+    <div style="background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);padding:18px;margin-bottom:20px">
+      <div style="font-size:15px;font-weight:700;margin-bottom:16px">Registrar gasto</div>
+      <div class="form-group">
+        <label class="form-label">Monto</label>
+        <input type="number" class="form-input" id="exp-amount" placeholder="$0" inputmode="decimal">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Descripción</label>
+        <input type="text" class="form-input" id="exp-desc" placeholder="¿En qué gastaste?">
+      </div>
+      <button class="btn btn-red" id="btn-save-exp">− Guardar gasto</button>
+    </div>
+
+    <span class="label">Gastos recientes</span>
+    <div id="exp-list"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     HISTORIAL
+══════════════════════════════ -->
+<div id="s-hist" class="screen">
+  <div class="sh">
+    <div class="sh-row">
+      <div>
+        <div class="sh-title">Historial</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap" id="hist-chips"></div>
+    </div>
+  </div>
+  <div id="hist-list"></div>
+
+  <!-- Datos / Backup section -->
+  <div class="section" style="margin-top:10px">
+    <div class="section-header"><span class="section-title">Datos y respaldo</span></div>
+
+    <div class="settings-row" onclick="exportData()">
+      <div class="settings-icon" style="background:var(--green-bg);border:1px solid var(--green-br)">📤</div>
+      <div class="settings-info">
+        <div class="settings-title">Exportar datos</div>
+        <div class="settings-sub">Guarda un archivo JSON de respaldo</div>
+      </div>
+      <div class="settings-arrow">›</div>
+    </div>
+
+    <div class="settings-row" onclick="document.getElementById('import-file').click()">
+      <div class="settings-icon" style="background:var(--blue-bg);border:1px solid var(--blue-br)">📥</div>
+      <div class="settings-info">
+        <div class="settings-title">Importar datos</div>
+        <div class="settings-sub">Restaura desde un archivo JSON</div>
+      </div>
+      <div class="settings-arrow">›</div>
+    </div>
+    <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
+
+    <div class="settings-row" onclick="confirmReset()">
+      <div class="settings-icon" style="background:var(--red-bg);border:1px solid var(--red-br)">🗑</div>
+      <div class="settings-info">
+        <div class="settings-title">Borrar todos los datos</div>
+        <div class="settings-sub">Esta acción no se puede deshacer</div>
+      </div>
+      <div class="settings-arrow">›</div>
+    </div>
+  </div>
+  <div style="height:16px"></div>
+</div>
+
+<!-- ══════════════════════════════
+     NAV
+══════════════════════════════ -->
+<nav>
+  <button class="nb active" id="nb-home" onclick="goTo('home')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 12L12 3l9 9M5 10v10a1 1 0 001 1h4v-6h4v6h4a1 1 0 001-1V10"/></svg>
+    Inicio
+  </button>
+  <button class="nb" id="nb-sell" onclick="goTo('sell')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+    Vender
+  </button>
+  <button class="nb" id="nb-inv" onclick="goTo('inv')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+    Stock
+    <div class="nb-dot" id="nb-inv-dot"></div>
+  </button>
+  <button class="nb" id="nb-exp" onclick="goTo('exp')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+    Gastos
+  </button>
+  <button class="nb" id="nb-hist" onclick="goTo('hist')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+    Historial
+  </button>
+</nav>
+</div>
+
+<!-- ══════════════════════════════
+     MODAL: VENTA PRODUCTO
+══════════════════════════════ -->
+<div class="overlay" id="m-sale">
   <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-product-name" id="modal-pname"></div>
-    <div class="modal-product-price" id="modal-pprice"></div>
-    <div class="qty-control">
-      <button class="qty-btn" id="qty-minus">−</button>
+    <div class="modal-drag"></div>
+    <div class="modal-title" id="ms-name"></div>
+    <div class="modal-sub" id="ms-price"></div>
+    <div class="qty-wrap">
+      <button class="qty-btn" id="qminus">−</button>
       <div id="modal-qty">1</div>
-      <button class="qty-btn" id="qty-plus">+</button>
+      <button class="qty-btn" id="qplus">+</button>
     </div>
-    <div class="modal-total">
-      <div class="modal-total-label">Total a cobrar</div>
-      <div class="modal-total-value" id="modal-total">$0</div>
+    <div class="total-box">
+      <div class="total-label">Total a cobrar</div>
+      <div class="total-val" id="ms-total">$0</div>
     </div>
-    <button class="btn-confirm" id="btn-confirm-sale">✓ Confirmar Venta</button>
-    <button class="btn-cancel" onclick="closeSaleModal()">Cancelar</button>
+    <button class="btn btn-green" id="btn-confirm-sale">✓&nbsp; Confirmar Venta</button>
+    <button class="btn btn-ghost" onclick="closeOverlay('m-sale')">Cancelar</button>
   </div>
 </div>
 
-<!-- MODAL GASTO -->
-<div class="modal-overlay" id="expense-modal">
+<!-- ══════════════════════════════
+     MODAL: NUEVO PRODUCTO
+══════════════════════════════ -->
+<div class="overlay" id="m-newprod">
   <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-product-name" style="margin-bottom:20px">Registrar Gasto</div>
+    <div class="modal-drag"></div>
+    <div class="modal-title">Nuevo Producto</div>
+    <div class="modal-sub">Completa los datos del producto</div>
     <div class="form-group">
-      <label class="form-label">Monto</label>
-      <input type="number" class="form-input" id="expense-amount" placeholder="0" inputmode="numeric">
+      <label class="form-label">Nombre del producto</label>
+      <input type="text" class="form-input" id="np-name" placeholder="Ej: Whisky, Score, Cerveza...">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Precio de venta</label>
+        <input type="number" class="form-input" id="np-price" placeholder="0" inputmode="decimal">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Stock inicial</label>
+        <input type="number" class="form-input" id="np-stock" placeholder="0" inputmode="numeric">
+      </div>
     </div>
     <div class="form-group">
-      <label class="form-label">Descripción</label>
-      <input type="text" class="form-input" id="expense-desc" placeholder="¿En qué gastaste?">
+      <label class="form-label">Costo unitario <span style="color:var(--text3);text-transform:none;letter-spacing:0">(precio de compra)</span></label>
+      <input type="number" class="form-input" id="np-cost" placeholder="Opcional" inputmode="decimal">
+      <div class="form-hint">Sirve para calcular tu ganancia real por venta</div>
     </div>
-    <button class="btn-expense" id="btn-save-expense">− Guardar Gasto</button>
-    <button class="btn-cancel" onclick="closeExpenseModal()">Cancelar</button>
+    <button class="btn btn-green" id="btn-save-prod">+ Crear Producto</button>
+    <button class="btn btn-ghost" onclick="closeOverlay('m-newprod')">Cancelar</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     MODAL: EDITAR PRODUCTO
+══════════════════════════════ -->
+<div class="overlay" id="m-editprod">
+  <div class="modal">
+    <div class="modal-drag"></div>
+    <div class="modal-title">Editar Producto</div>
+    <div class="modal-sub" id="ep-sub"></div>
+    <div class="form-group">
+      <label class="form-label">Nombre</label>
+      <input type="text" class="form-input" id="ep-name">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Precio de venta</label>
+        <input type="number" class="form-input" id="ep-price" inputmode="decimal">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Costo unitario</label>
+        <input type="number" class="form-input" id="ep-cost" inputmode="decimal">
+      </div>
+    </div>
+    <button class="btn btn-primary" id="btn-save-edit">Guardar cambios</button>
+    <button class="btn btn-ghost" onclick="closeOverlay('m-editprod')">Cancelar</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     MODAL: REGISTRAR COMPRA
+══════════════════════════════ -->
+<div class="overlay" id="m-purchase">
+  <div class="modal">
+    <div class="modal-drag"></div>
+    <div class="modal-title" id="mp-name"></div>
+    <div class="modal-sub">Registrar entrada de stock</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Cantidad</label>
+        <input type="number" class="form-input" id="mp-qty" placeholder="0" inputmode="numeric">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Costo unitario</label>
+        <input type="number" class="form-input" id="mp-cost" placeholder="0" inputmode="decimal">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Total pagado <span id="mp-calc" style="color:var(--blue-l);font-family:'JetBrains Mono',monospace;font-size:12px;text-transform:none;letter-spacing:0"></span></label>
+      <input type="number" class="form-input" id="mp-total" placeholder="Se calcula automático" inputmode="decimal">
+    </div>
+    <button class="btn btn-primary" id="btn-confirm-purchase">+ Confirmar Compra</button>
+    <button class="btn btn-ghost" onclick="closeOverlay('m-purchase')">Cancelar</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     MODAL: PACK MANAGER
+══════════════════════════════ -->
+<div class="overlay" id="m-packs">
+  <div class="modal">
+    <div class="modal-drag"></div>
+    <div class="modal-title">Packs y Ofertas</div>
+    <div class="modal-sub">Crea precios especiales para vender más rápido</div>
+
+    <!-- Crear pack -->
+    <div style="background:var(--surface2);border-radius:var(--r);padding:16px;margin-bottom:16px;border:1px solid var(--border2)">
+      <div style="font-size:13px;font-weight:700;margin-bottom:12px;color:var(--text2)">Nuevo pack</div>
+      <div class="form-group">
+        <label class="form-label">Producto</label>
+        <select class="form-input" id="pk-product" style="cursor:pointer"></select>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Cantidad</label>
+          <input type="number" class="form-input" id="pk-qty" placeholder="Ej: 2" inputmode="numeric">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Precio pack</label>
+          <input type="number" class="form-input" id="pk-price" placeholder="Ej: 6000" inputmode="decimal">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nombre del pack <span style="color:var(--text3);text-transform:none;letter-spacing:0">(opcional)</span></label>
+        <input type="text" class="form-input" id="pk-name" placeholder="Ej: Promo 2x1">
+      </div>
+      <button class="btn btn-purple" id="btn-save-pack" style="background:var(--purple-bg);color:var(--purple);border:1px solid var(--purple-br)">⚡ Crear Pack</button>
+    </div>
+
+    <!-- Lista de packs existentes -->
+    <div id="pk-existing"></div>
+    <button class="btn btn-ghost" onclick="closeOverlay('m-packs')">Cerrar</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     MODAL: CONFIRMAR PACK VENTA
+══════════════════════════════ -->
+<div class="overlay" id="m-pack-sale">
+  <div class="modal">
+    <div class="modal-drag"></div>
+    <div class="modal-title" id="mps-name"></div>
+    <div class="modal-sub" id="mps-sub"></div>
+    <div class="qty-wrap">
+      <button class="qty-btn" id="pqminus">−</button>
+      <div id="modal-pqty">1</div>
+      <button class="qty-btn" id="pqplus">+</button>
+    </div>
+    <div class="total-box" style="border-color:var(--purple-br)">
+      <div class="total-label">Total a cobrar</div>
+      <div class="total-val" style="color:var(--purple)" id="mps-total">$0</div>
+    </div>
+    <div style="font-size:12px;color:var(--text3);text-align:center;margin-bottom:16px" id="mps-detail"></div>
+    <button class="btn" style="background:var(--purple);color:#fff" id="btn-confirm-pack-sale">⚡ Confirmar Pack</button>
+    <button class="btn btn-ghost" onclick="closeOverlay('m-pack-sale')">Cancelar</button>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-const DEFAULT_PRODUCTS = [
-  { id:'score',  name:'Score',  stock:10, cost:650,  price:1500 },
-  { id:'whisky', name:'Whisky', stock:5,  cost:650,  price:2000 }
-];
+/* ═══════════════════════════════════════════
+   PERSISTENCE
+═══════════════════════════════════════════ */
+const LS = {
+  get: (k,d) => { try{ const v=localStorage.getItem(k); return v?JSON.parse(v):d }catch{ return d } },
+  set: (k,v) => localStorage.setItem(k,JSON.stringify(v))
+};
 
-function load(k,d){ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):d; }catch{ return d; } }
-function save(k,v){ localStorage.setItem(k,JSON.stringify(v)); }
+let products  = LS.get('fc3_products',  []);
+let sales     = LS.get('fc3_sales',     []);
+let expenses  = LS.get('fc3_expenses',  []);
+let purchases = LS.get('fc3_purchases', []);
+let packs     = LS.get('fc3_packs',     []);
 
-let products = load('fc_products', DEFAULT_PRODUCTS);
-let sales    = load('fc_sales',    []);
-let expenses = load('fc_expenses', []);
+function persist(){
+  LS.set('fc3_products',products);
+  LS.set('fc3_sales',sales);
+  LS.set('fc3_expenses',expenses);
+  LS.set('fc3_purchases',purchases);
+  LS.set('fc3_packs',packs);
+}
 
-function persist(){ save('fc_products',products); save('fc_sales',sales); save('fc_expenses',expenses); }
+/* ═══════════════════════════════════════════
+   UTILS
+═══════════════════════════════════════════ */
+const fmt    = n => '$'+Math.round(n).toLocaleString('es-CL');
+const uid    = () => Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const fmtT   = iso => new Date(iso).toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'});
+const fmtD   = iso => new Date(iso).toLocaleDateString('es-CL',{day:'numeric',month:'short'});
 
-function fmt(n){ return '$'+Math.round(n).toLocaleString('es-CL'); }
-function fmtTime(iso){ const d=new Date(iso); return d.toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'}); }
 function dayKey(iso){
-  const d=new Date(iso), t=new Date(), y=new Date();
+  const d=new Date(iso),t=new Date(),y=new Date();
   y.setDate(y.getDate()-1);
   if(d.toDateString()===t.toDateString()) return 'Hoy';
   if(d.toDateString()===y.toDateString()) return 'Ayer';
   return d.toLocaleDateString('es-CL',{weekday:'long',day:'numeric',month:'short'});
 }
-function daySort(iso){ return new Date(iso).toDateString(); }
-function totalIncome(){ return sales.reduce((s,v)=>s+v.total,0); }
-function totalExp(){ return expenses.reduce((s,e)=>s+e.amount,0); }
+const daySort = iso => new Date(iso).toDateString();
 
-let toastTimer;
-function showToast(msg, err=false){
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.className='toast'+(err?' error':'')+' show';
-  clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2300);
+let _toastT;
+function toast(msg, type=''){
+  const el=document.getElementById('toast');
+  el.textContent=msg;
+  el.className='toast show'+(type?' '+type:'');
+  clearTimeout(_toastT);
+  _toastT=setTimeout(()=>{ el.classList.remove('show') },2500);
 }
 
-// NAVIGATION
+function ripple(e,el){
+  const r=document.createElement('span'); r.className='rip';
+  const rect=el.getBoundingClientRect();
+  r.style.left=(e.clientX-rect.left)+'px';
+  r.style.top=(e.clientY-rect.top)+'px';
+  el.appendChild(r); setTimeout(()=>r.remove(),600);
+}
+
+function confirmAction(msg, cb){
+  if(window.confirm(msg)) cb();
+}
+
+/* ═══════════════════════════════════════════
+   TOTALS
+═══════════════════════════════════════════ */
+const sumIncome  = () => sales.reduce((s,v)=>s+v.total,0);
+const sumExp     = () => expenses.reduce((s,e)=>s+e.amount,0);
+const sumCOGS    = () => sales.reduce((s,v)=>s+(v.cost||0),0);
+const netProfit  = () => sumIncome() - sumCOGS() - sumExp();
+const balance    = () => sumIncome() - sumExp();
+
+/* ═══════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════ */
+const SCREENS = ['home','sell','inv','exp','hist'];
+const RENDERS = { home:renderHome, sell:renderSell, inv:renderInv, exp:renderExp, hist:renderHist };
+
 function goTo(name){
-  ['home','sell','history'].forEach(k=>{
-    document.getElementById('screen-'+k).classList.toggle('active',k===name);
-    document.getElementById('nav-'+k).classList.toggle('active',k===name);
+  SCREENS.forEach(k=>{
+    document.getElementById('s-'+k).classList.toggle('active',k===name);
+    document.getElementById('nb-'+k).classList.toggle('active',k===name);
   });
-  if(name==='home')    renderHome();
-  if(name==='sell')    renderSell();
-  if(name==='history') renderHistory();
+  RENDERS[name]();
 }
 
-// HOME
-function renderHome(){
-  document.getElementById('home-date').textContent =
-    new Date().toLocaleDateString('es-CL',{weekday:'short',day:'numeric',month:'short'}).toUpperCase();
-  const inc=totalIncome(), exp=totalExp(), net=inc-exp;
-  document.getElementById('bal-income').textContent=fmt(inc);
-  document.getElementById('bal-expenses').textContent=fmt(exp);
-  const ne=document.getElementById('bal-net');
-  ne.textContent=fmt(net); ne.className='balance-value '+(net>=0?'accent':'red');
+function closeOverlay(id){ document.getElementById(id).classList.remove('open') }
+function openOverlay(id){ document.getElementById(id).classList.add('open') }
 
-  const el=document.getElementById('home-stock-list');
-  el.innerHTML='';
+document.querySelectorAll('.overlay').forEach(o=>{
+  o.addEventListener('click',function(e){ if(e.target===this) this.classList.remove('open') });
+});
+
+/* ═══════════════════════════════════════════
+   HOME
+═══════════════════════════════════════════ */
+function renderHome(){
+  // Greeting
+  const h=new Date().getHours();
+  const g = h<12?'Buenos días ☀️':h<19?'Buenas tardes 👋':'Buenas noches 🌙';
+  document.getElementById('home-greeting').textContent=g;
+  document.getElementById('home-date').textContent=
+    new Date().toLocaleDateString('es-CL',{weekday:'long',day:'numeric',month:'long'});
+
+  // KPIs
+  const inc=sumIncome(), exp=sumExp(), cogs=sumCOGS();
+  const prof=netProfit(), bal=balance();
+  document.getElementById('k-income').textContent   = fmt(inc);
+  document.getElementById('k-expenses').textContent = fmt(exp);
+  document.getElementById('k-cogs').textContent     = fmt(cogs);
+  document.getElementById('k-balance').textContent  = fmt(bal);
+  const pe=document.getElementById('k-profit');
+  pe.textContent=fmt(prof);
+  pe.className='kpi-val '+(prof>=0?'yellow':'red');
+
+  // Empty state
+  const hasProd=products.length>0;
+  document.getElementById('home-empty').style.display   = hasProd?'none':'block';
+  document.getElementById('home-content').style.display = hasProd?'block':'none';
+
+  if(hasProd){
+    // Stock rápido
+    const el=document.getElementById('home-stock');
+    el.innerHTML='';
+    const lowOnes=products.filter(p=>p.stock<=3);
+    // Show low stock first, then rest (max 4 total)
+    const sorted=[...products].sort((a,b)=>a.stock-b.stock).slice(0,4);
+    sorted.forEach(p=>{
+      const low=p.stock<=3;
+      const d=document.createElement('div');
+      d.className='stock-row'+(low?' low':'');
+      d.innerHTML=`
+        <div class="stock-badge2 ${low?'low':''}">${p.stock}</div>
+        <div class="stock-info">
+          <div class="stock-name">${p.name}</div>
+          <div class="stock-meta">${fmt(p.price)}${p.cost?' · margen '+fmt(p.price-p.cost):''}</div>
+        </div>
+        ${low?'<span class="chip chip-red">⚠ Bajo</span>':''}`;
+      el.appendChild(d);
+    });
+
+    // Low stock nav dot
+    document.getElementById('nb-inv-dot').classList.toggle('show', lowOnes.length>0);
+
+    // Actividad reciente (últimas 8 transacciones mixtas)
+    const feed=document.getElementById('home-feed');
+    const all=[
+      ...sales.map(v=>({type:'sale',date:v.date,desc:`${v.product}${v.qty>1?' ×'+v.qty:''}`,amount:v.total})),
+      ...expenses.map(e=>({type:'exp',date:e.date,desc:e.description,amount:e.amount})),
+      ...purchases.map(p=>({type:'buy',date:p.date,desc:`Compra ${p.product} ×${p.qty}`,amount:p.totalPaid}))
+    ].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,8);
+
+    if(!all.length){
+      feed.innerHTML=`<div class="empty" style="padding:20px 0"><div style="font-size:28px;margin-bottom:6px">📊</div><p style="margin:0;color:var(--text3)">Sin movimientos aún</p></div>`;
+    } else {
+      feed.innerHTML='';
+      all.forEach(tx=>{
+        const icons={sale:'💰',exp:'💸',buy:'📥'};
+        const cls={sale:'sale',exp:'exp',buy:'buy'};
+        const amtCls={sale:'pos',exp:'neg',buy:'neu'};
+        const sign={sale:'+',exp:'-',buy:'-'};
+        const d=document.createElement('div'); d.className='feed-item';
+        d.innerHTML=`
+          <div class="feed-icon ${cls[tx.type]}">${icons[tx.type]}</div>
+          <div class="feed-info">
+            <div class="feed-desc">${tx.desc}</div>
+            <div class="feed-meta">${fmtT(tx.date)} · ${fmtD(tx.date)}</div>
+          </div>
+          <div class="feed-amount ${amtCls[tx.type]}">${sign[tx.type]}${fmt(tx.amount)}</div>`;
+        feed.appendChild(d);
+      });
+    }
+  }
+}
+
+/* ═══════════════════════════════════════════
+   SELL
+═══════════════════════════════════════════ */
+function renderSell(){
+  const hasP=products.length>0;
+  document.getElementById('sell-empty').style.display   = hasP?'none':'block';
+  document.getElementById('sell-content').style.display = hasP?'block':'none';
+  if(!hasP) return;
+
+  // Packs
+  const hasPacks=packs.length>0;
+  document.getElementById('packs-wrap').style.display = hasPacks?'block':'none';
+  if(hasPacks){
+    const row=document.getElementById('packs-row');
+    row.innerHTML='';
+    packs.forEach(pk=>{
+      const prod=products.find(x=>x.id===pk.productId);
+      if(!prod) return;
+      const pill=document.createElement('div');
+      pill.className='pack-pill';
+      pill.innerHTML=`
+        <span>⚡ ${pk.name||pk.qty+'× '+prod.name} — ${fmt(pk.price)}</span>`;
+      pill.onclick=(e)=>{ ripple(e,pill); openPackSaleModal(pk,prod); };
+      row.appendChild(pill);
+    });
+  }
+
+  // Product grid
+  const grid=document.getElementById('sell-grid');
+  grid.innerHTML='';
   products.forEach(p=>{
-    const low=p.stock<=3;
-    const d=document.createElement('div'); d.className='product-list-item';
+    const low=p.stock<=3, zero=p.stock===0;
+    const c=document.createElement('div');
+    c.className='prod-card'+(zero?' zero':low?' low':'');
+    c.innerHTML=`
+      <span class="sbadge ${low?'low':''}">${p.stock}</span>
+      <div class="prod-card-name">${p.name}</div>
+      <div class="prod-card-price">${fmt(p.price)}</div>
+      <div class="prod-card-stock ${low?'low':''}">${zero?'⚠ Sin stock':low?'⚠ Stock bajo':'Disponible'}</div>`;
+    if(!zero) c.onclick=e=>{ ripple(e,c); openSaleModal(p) };
+    grid.appendChild(c);
+  });
+}
+
+/* ── SALE MODAL ── */
+let _sp=null, _sq=1;
+
+function openSaleModal(p){
+  _sp=p; _sq=1;
+  document.getElementById('ms-name').textContent=p.name;
+  document.getElementById('ms-price').textContent=fmt(p.price)+' por unidad';
+  document.getElementById('modal-qty').textContent=1;
+  updSaleTotal();
+  openOverlay('m-sale');
+}
+function updSaleTotal(){ document.getElementById('ms-total').textContent=fmt(_sp.price*_sq) }
+
+document.getElementById('qminus').onclick=()=>{
+  if(_sq>1){ _sq--; document.getElementById('modal-qty').textContent=_sq; updSaleTotal() }
+};
+document.getElementById('qplus').onclick=()=>{
+  if(_sq<_sp.stock){ _sq++; document.getElementById('modal-qty').textContent=_sq; updSaleTotal() }
+  else toast('No hay más stock 📦','err');
+};
+
+document.getElementById('btn-confirm-sale').onclick=function(){
+  if(!_sp) return;
+  const p=products.find(x=>x.id===_sp.id);
+  if(p.stock<_sq){ toast('Stock insuficiente','err'); return }
+  p.stock-=_sq;
+  const total=p.price*_sq, cost=(p.cost||0)*_sq;
+  sales.unshift({id:uid(),product:p.name,productId:p.id,qty:_sq,total,cost,date:new Date().toISOString()});
+  persist();
+  closeOverlay('m-sale');
+  toast(`✓ ${p.name} ×${_sq} — ${fmt(total)}`,'ok');
+  if(p.stock===0) setTimeout(()=>toast(`⚠ ${p.name} sin stock`,'err'),2600);
+  else if(p.stock<=3) setTimeout(()=>toast(`⚠ ${p.name}: ${p.stock} en stock`,'err'),2600);
+  renderSell(); renderHome();
+};
+
+/* ── PACK SALE MODAL ── */
+let _cpk=null, _cprod=null, _pq=1;
+
+function openPackSaleModal(pk,prod){
+  _cpk=pk; _cprod=prod; _pq=1;
+  document.getElementById('mps-name').textContent=pk.name||`${pk.qty}× ${prod.name}`;
+  document.getElementById('mps-sub').textContent=`${pk.qty} unidades por ${fmt(pk.price)}`;
+  document.getElementById('modal-pqty').textContent=1;
+  updPackTotal();
+  openOverlay('m-pack-sale');
+}
+function updPackTotal(){
+  const totalUnits=_cpk.qty*_pq;
+  document.getElementById('mps-total').textContent=fmt(_cpk.price*_pq);
+  document.getElementById('mps-detail').textContent=`${totalUnits} unidades · ${fmt(_cpk.price/_cpk.qty)} c/u`;
+}
+
+document.getElementById('pqminus').onclick=()=>{
+  if(_pq>1){ _pq--; document.getElementById('modal-pqty').textContent=_pq; updPackTotal() }
+};
+document.getElementById('pqplus').onclick=()=>{
+  const need=_cpk.qty*(_pq+1);
+  if(need<=_cprod.stock){ _pq++; document.getElementById('modal-pqty').textContent=_pq; updPackTotal() }
+  else toast('Stock insuficiente para otro pack','err');
+};
+
+document.getElementById('btn-confirm-pack-sale').onclick=function(){
+  if(!_cpk||!_cprod) return;
+  const totalUnits=_cpk.qty*_pq;
+  const p=products.find(x=>x.id===_cprod.id);
+  if(p.stock<totalUnits){ toast('Stock insuficiente','err'); return }
+  p.stock-=totalUnits;
+  const total=_cpk.price*_pq, cost=(p.cost||0)*totalUnits;
+  sales.unshift({id:uid(),product:_cpk.name||`${_cpk.qty}× ${p.name}`,productId:p.id,qty:totalUnits,total,cost,date:new Date().toISOString(),isPack:true});
+  persist();
+  closeOverlay('m-pack-sale');
+  toast(`⚡ Pack vendido — ${fmt(total)}`,'ok');
+  if(p.stock<=3) setTimeout(()=>toast(`⚠ ${p.name}: ${p.stock} en stock`,'err'),2600);
+  renderSell(); renderHome();
+};
+
+/* ═══════════════════════════════════════════
+   PACK MANAGER
+═══════════════════════════════════════════ */
+function openPackManager(){
+  // Populate product selector
+  const sel=document.getElementById('pk-product');
+  sel.innerHTML='';
+  products.forEach(p=>{
+    const o=document.createElement('option');
+    o.value=p.id; o.textContent=p.name;
+    sel.appendChild(o);
+  });
+  // Clear form
+  ['pk-qty','pk-price','pk-name'].forEach(id=>document.getElementById(id).value='');
+  renderPackList();
+  openOverlay('m-packs');
+}
+
+function renderPackList(){
+  const el=document.getElementById('pk-existing');
+  el.innerHTML='';
+  if(!packs.length){
+    el.innerHTML='<div style="text-align:center;padding:16px;color:var(--text3);font-size:14px">Aún no hay packs creados</div>';
+    return;
+  }
+  packs.forEach(pk=>{
+    const prod=products.find(x=>x.id===pk.productId);
+    const d=document.createElement('div'); d.className='pack-list-item';
     d.innerHTML=`
-      <div class="pli-info">
-        <div class="pli-name">${p.name}</div>
-        <div class="pli-meta">Costo ${fmt(p.cost)} · Venta ${fmt(p.price)}</div>
+      <div class="pack-list-info">
+        <div class="pack-list-name">${pk.name||pk.qty+'× '+( prod?prod.name:'?')}</div>
+        <div class="pack-list-meta">${pk.qty} unid · ${fmt(pk.price)} · ${fmt(pk.price/pk.qty)} c/u</div>
       </div>
-      <div class="pli-stock-controls">
-        <button class="stock-ctrl-btn" onclick="adjStock('${p.id}',-1)">−</button>
-        <div class="pli-stock-val ${low?'low':''}">${p.stock}</div>
-        <button class="stock-ctrl-btn" onclick="adjStock('${p.id}',1)">+</button>
-      </div>`;
+      <button class="pack-del-btn" onclick="deletePack('${pk.id}')">✕</button>`;
     el.appendChild(d);
   });
 }
 
-function adjStock(id,delta){
-  const p=products.find(x=>x.id===id); if(!p) return;
-  p.stock=Math.max(0,p.stock+delta); persist(); renderHome();
+document.getElementById('btn-save-pack').onclick=function(){
+  const productId=document.getElementById('pk-product').value;
+  const qty=parseInt(document.getElementById('pk-qty').value);
+  const price=parseFloat(document.getElementById('pk-price').value);
+  const name=document.getElementById('pk-name').value.trim();
+  if(!productId){ toast('Selecciona un producto','err'); return }
+  if(!qty||qty<1){ toast('Ingresa una cantidad','err'); return }
+  if(!price||price<=0){ toast('Ingresa un precio','err'); return }
+  packs.push({id:uid(),productId,qty,price,name});
+  persist();
+  ['pk-qty','pk-price','pk-name'].forEach(id=>document.getElementById(id).value='');
+  toast('⚡ Pack creado','ok');
+  renderPackList();
+  renderSell();
+};
+
+function deletePack(id){
+  packs=packs.filter(x=>x.id!==id);
+  persist(); renderPackList(); renderSell();
+  toast('Pack eliminado');
 }
 
-// SELL
-function renderSell(){
-  const g=document.getElementById('sell-product-grid'); g.innerHTML='';
+/* ═══════════════════════════════════════════
+   INVENTORY
+═══════════════════════════════════════════ */
+function renderInv(){
+  const el=document.getElementById('inv-list');
+  const empty=document.getElementById('inv-empty');
+  const sub=document.getElementById('inv-sub');
+  el.innerHTML='';
+
+  if(!products.length){ empty.style.display='block'; el.style.display='none'; return }
+  empty.style.display='none'; el.style.display='block';
+
+  const low=products.filter(p=>p.stock<=3).length;
+  sub.textContent=`${products.length} producto${products.length!==1?'s':''}`+(low?` · ⚠ ${low} con stock bajo`:'');
+
   products.forEach(p=>{
-    const low=p.stock<=3, zero=p.stock===0;
-    const c=document.createElement('div');
-    c.className='product-card'+(low?' low-stock':'');
-    c.innerHTML=`
-      <span class="stock-badge ${low?'low':''}">${p.stock}</span>
-      <div class="product-name">${p.name}</div>
-      <div class="product-price">${fmt(p.price)}</div>
-      <div class="product-stock ${low?'low':''}">${zero?'⚠ Sin stock':low?'⚠ Stock bajo':'Disponible'}</div>`;
-    if(!zero){ c.onclick=(e)=>{ addRipple(e,c); openSaleModal(p); }; }
-    else c.style.opacity='0.5';
-    g.appendChild(c);
+    const isLow=p.stock<=3;
+    const margin=p.cost&&p.cost>0?((p.price-p.cost)/p.price)*100:0;
+    const card=document.createElement('div'); card.className='inv-card';
+    card.innerHTML=`
+      <div class="inv-card-top">
+        <div class="inv-avatar">📦</div>
+        <div class="inv-card-info">
+          <div class="inv-card-name">${p.name}</div>
+          <div class="inv-card-meta">Venta ${fmt(p.price)}${p.cost?' · Costo '+fmt(p.cost):''}</div>
+        </div>
+        <div>
+          <div class="inv-stock-num ${isLow?'low':''}">${p.stock}</div>
+          <div style="font-size:10px;color:var(--text3);text-align:right">unid.</div>
+        </div>
+      </div>
+      ${p.cost?`
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+          <span style="font-size:11px;color:var(--text3)">Margen bruto</span>
+          <span class="chip chip-yellow">${fmt(p.price-p.cost)} · ${margin.toFixed(0)}%</span>
+        </div>
+        <div class="margin-bar"><div class="margin-fill" style="width:${Math.min(margin,100)}%"></div></div>
+      `:''}
+      ${isLow?`<div style="margin-bottom:12px"><span class="chip chip-red">⚠ Stock bajo — reponer pronto</span></div>`:''}
+      <div class="inv-btns">
+        <button class="btn btn-primary btn-sm" onclick="openPurchaseModal('${p.id}')">+ Compra</button>
+        <button class="btn btn-outline btn-sm" onclick="openEditProduct('${p.id}')">Editar</button>
+        <button class="btn btn-sm" style="background:var(--red-bg);color:var(--red-l);border:1px solid var(--red-br)" onclick="deleteProduct('${p.id}')">Eliminar</button>
+      </div>`;
+    el.appendChild(card);
   });
 }
 
-function addRipple(e,el){
-  const r=document.createElement('span'); r.className='ripple-effect';
-  const rect=el.getBoundingClientRect();
-  r.style.left=(e.clientX-rect.left)+'px'; r.style.top=(e.clientY-rect.top)+'px';
-  el.appendChild(r); setTimeout(()=>r.remove(),500);
+/* ── NEW PRODUCT ── */
+function openNewProduct(){
+  ['np-name','np-price','np-stock','np-cost'].forEach(id=>document.getElementById(id).value='');
+  openOverlay('m-newprod');
+  setTimeout(()=>document.getElementById('np-name').focus(),350);
 }
 
-// SALE MODAL
-let curProd=null, curQty=1;
+document.getElementById('btn-save-prod').onclick=function(){
+  const name=document.getElementById('np-name').value.trim();
+  const price=parseFloat(document.getElementById('np-price').value);
+  const stock=parseInt(document.getElementById('np-stock').value)||0;
+  const cost=parseFloat(document.getElementById('np-cost').value)||0;
+  if(!name){ toast('Ingresa un nombre','err'); return }
+  if(!price||price<=0){ toast('Ingresa un precio de venta','err'); return }
+  products.push({id:uid(),name,price,cost,stock});
+  persist();
+  closeOverlay('m-newprod');
+  toast(`✓ "${name}" creado`,'ok');
+  renderInv(); renderHome(); renderSell();
+};
 
-function openSaleModal(p){
-  curProd=p; curQty=1;
-  document.getElementById('modal-pname').textContent=p.name;
-  document.getElementById('modal-pprice').textContent=fmt(p.price)+' c/u';
-  document.getElementById('modal-qty').textContent=1;
-  updTotal();
-  document.getElementById('sale-modal').classList.add('open');
+/* ── EDIT PRODUCT ── */
+let _editId=null;
+function openEditProduct(id){
+  const p=products.find(x=>x.id===id); if(!p) return;
+  _editId=id;
+  document.getElementById('ep-sub').textContent=`Editando: ${p.name}`;
+  document.getElementById('ep-name').value=p.name;
+  document.getElementById('ep-price').value=p.price;
+  document.getElementById('ep-cost').value=p.cost||'';
+  openOverlay('m-editprod');
 }
-function closeSaleModal(){ document.getElementById('sale-modal').classList.remove('open'); curProd=null; }
-function updTotal(){ document.getElementById('modal-total').textContent=fmt(curProd.price*curQty); }
-
-document.getElementById('qty-minus').onclick=()=>{ if(curQty>1){ curQty--; document.getElementById('modal-qty').textContent=curQty; updTotal(); } };
-document.getElementById('qty-plus').onclick=()=>{
-  if(curQty<curProd.stock){ curQty++; document.getElementById('modal-qty').textContent=curQty; updTotal(); }
-  else showToast('No hay más stock 📦',true);
+document.getElementById('btn-save-edit').onclick=function(){
+  const p=products.find(x=>x.id===_editId); if(!p) return;
+  const name=document.getElementById('ep-name').value.trim();
+  const price=parseFloat(document.getElementById('ep-price').value);
+  const cost=parseFloat(document.getElementById('ep-cost').value)||0;
+  if(!name){ toast('Ingresa un nombre','err'); return }
+  if(!price||price<=0){ toast('Ingresa un precio','err'); return }
+  p.name=name; p.price=price; p.cost=cost;
+  persist();
+  closeOverlay('m-editprod');
+  toast('✓ Producto actualizado','ok');
+  renderInv(); renderHome(); renderSell();
 };
 
-document.getElementById('btn-confirm-sale').onclick=function(){
-  if(!curProd) return;
-  const p=products.find(x=>x.id===curProd.id);
-  if(p.stock<curQty){ showToast('Stock insuficiente',true); return; }
-  p.stock-=curQty;
-  const total=p.price*curQty, profit=(p.price-p.cost)*curQty;
-  sales.unshift({ product:p.name, qty:curQty, total, profit, date:new Date().toISOString() });
-  persist(); closeSaleModal();
-  showToast(`✓ Venta ${p.name} · ${fmt(total)}`);
-  if(p.stock===0) setTimeout(()=>showToast(`⚠ ${p.name} sin stock`,true),2500);
-  else if(p.stock<=3) setTimeout(()=>showToast(`⚠ ${p.name}: ${p.stock} restante${p.stock>1?'s':''}`,true),2500);
-  renderHome(); renderSell();
-};
-
-// EXPENSE MODAL
-function openExpenseModal(){
-  document.getElementById('expense-amount').value='';
-  document.getElementById('expense-desc').value='';
-  document.getElementById('expense-modal').classList.add('open');
-  setTimeout(()=>document.getElementById('expense-amount').focus(),350);
+function deleteProduct(id){
+  const p=products.find(x=>x.id===id); if(!p) return;
+  confirmAction(`¿Eliminar "${p.name}"? No se puede deshacer.`, ()=>{
+    products=products.filter(x=>x.id!==id);
+    packs=packs.filter(x=>x.productId!==id);
+    persist(); toast('Producto eliminado'); renderInv(); renderHome(); renderSell();
+  });
 }
-function closeExpenseModal(){ document.getElementById('expense-modal').classList.remove('open'); }
 
-document.getElementById('btn-save-expense').onclick=function(){
-  const amt=parseFloat(document.getElementById('expense-amount').value);
-  const desc=document.getElementById('expense-desc').value.trim();
-  if(!amt||amt<=0){ showToast('Ingresa un monto válido',true); return; }
-  if(!desc){ showToast('Agrega una descripción',true); return; }
-  expenses.unshift({ amount:amt, description:desc, date:new Date().toISOString() });
-  persist(); closeExpenseModal();
-  showToast(`− Gasto guardado · ${fmt(amt)}`);
-  renderHome();
+/* ── PURCHASE MODAL ── */
+let _pp=null;
+function openPurchaseModal(id){
+  _pp=products.find(x=>x.id===id); if(!_pp) return;
+  document.getElementById('mp-name').textContent=_pp.name;
+  document.getElementById('mp-qty').value='';
+  document.getElementById('mp-cost').value=_pp.cost||'';
+  document.getElementById('mp-total').value='';
+  document.getElementById('mp-calc').textContent='';
+  openOverlay('m-purchase');
+  setTimeout(()=>document.getElementById('mp-qty').focus(),350);
+}
+['mp-qty','mp-cost'].forEach(id=>{
+  document.getElementById(id).addEventListener('input',()=>{
+    const q=parseInt(document.getElementById('mp-qty').value)||0;
+    const c=parseFloat(document.getElementById('mp-cost').value)||0;
+    if(q&&c){
+      const t=q*c;
+      document.getElementById('mp-total').value=t;
+      document.getElementById('mp-calc').textContent='= '+fmt(t);
+    }
+  });
+});
+document.getElementById('btn-confirm-purchase').onclick=function(){
+  if(!_pp) return;
+  const qty=parseInt(document.getElementById('mp-qty').value);
+  const cost=parseFloat(document.getElementById('mp-cost').value)||_pp.cost||0;
+  const totalPaid=parseFloat(document.getElementById('mp-total').value)||(qty*(cost||0));
+  if(!qty||qty<=0){ toast('Ingresa una cantidad','err'); return }
+  const p=products.find(x=>x.id===_pp.id);
+  p.stock+=qty;
+  if(cost) p.cost=cost;
+  purchases.unshift({id:uid(),productId:p.id,product:p.name,qty,cost,totalPaid,date:new Date().toISOString()});
+  persist();
+  closeOverlay('m-purchase');
+  toast(`✓ +${qty} ${p.name} en stock`,'ok');
+  renderInv(); renderHome();
 };
 
-document.getElementById('expense-desc').addEventListener('keydown',e=>{ if(e.key==='Enter') document.getElementById('btn-save-expense').click(); });
+/* ═══════════════════════════════════════════
+   EXPENSES
+═══════════════════════════════════════════ */
+document.getElementById('btn-save-exp').onclick=function(){
+  const amt=parseFloat(document.getElementById('exp-amount').value);
+  const desc=document.getElementById('exp-desc').value.trim();
+  if(!amt||amt<=0){ toast('Monto inválido','err'); return }
+  if(!desc){ toast('Agrega una descripción','err'); return }
+  expenses.unshift({id:uid(),amount:amt,description:desc,date:new Date().toISOString()});
+  persist();
+  document.getElementById('exp-amount').value='';
+  document.getElementById('exp-desc').value='';
+  toast(`− Gasto guardado · ${fmt(amt)}`);
+  renderExp(); renderHome();
+};
+document.getElementById('exp-desc').addEventListener('keydown',e=>{
+  if(e.key==='Enter') document.getElementById('btn-save-exp').click();
+});
 
-// HISTORY
-function renderHistory(){
-  const inc=totalIncome(), exp=totalExp();
-  const s=document.getElementById('history-summary');
-  s.innerHTML=`<span class="stat-pill green">${fmt(inc)}</span><span class="stat-pill red">${fmt(exp)}</span>`;
+function renderExp(){
+  document.getElementById('exp-total-label').textContent='Total: '+fmt(sumExp());
+  const el=document.getElementById('exp-list');
+  el.innerHTML='';
+  if(!expenses.length){
+    el.innerHTML='<div class="empty" style="padding:24px 0"><div class="empty-icon" style="font-size:32px">💸</div><p>Sin gastos aún</p></div>';
+    return;
+  }
+  expenses.forEach(e=>{
+    const d=document.createElement('div');
+    d.style.cssText='display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);padding:14px;margin-bottom:8px';
+    d.innerHTML=`
+      <div class="feed-icon exp">💸</div>
+      <div class="feed-info">
+        <div class="feed-desc">${e.description}</div>
+        <div class="feed-meta">${fmtT(e.date)} · ${fmtD(e.date)}</div>
+      </div>
+      <div class="feed-amount neg">-${fmt(e.amount)}</div>`;
+    el.appendChild(d);
+  });
+}
+
+/* ═══════════════════════════════════════════
+   HISTORY
+═══════════════════════════════════════════ */
+function renderHist(){
+  const chips=document.getElementById('hist-chips');
+  chips.innerHTML=`
+    <span class="chip chip-green">+${fmt(sumIncome())}</span>
+    <span class="chip chip-red">-${fmt(sumExp())}</span>
+    <span class="chip chip-yellow">⚡ ${fmt(netProfit())}</span>`;
 
   const all=[
-    ...sales.map(v=>({ type:'income', date:v.date, desc:`${v.product} ×${v.qty}`, amount:v.total, profit:v.profit })),
-    ...expenses.map(e=>({ type:'expense', date:e.date, desc:e.description, amount:e.amount }))
+    ...sales.map(v=>({type:'sale',   date:v.date, desc:`${v.product}${v.qty>1?' ×'+v.qty:''}`, amount:v.total,    profit:v.total-(v.cost||0)})),
+    ...expenses.map(e=>({type:'exp',  date:e.date, desc:e.description,                           amount:e.amount})),
+    ...purchases.map(p=>({type:'buy', date:p.date, desc:`Compra ${p.product} ×${p.qty}`,         amount:p.totalPaid}))
   ].sort((a,b)=>new Date(b.date)-new Date(a.date));
 
-  const container=document.getElementById('history-list');
+  const container=document.getElementById('hist-list');
   container.innerHTML='';
 
   if(!all.length){
-    container.innerHTML='<div class="empty-state"><div class="empty-icon">📊</div>Aún no hay transacciones</div>';
+    container.innerHTML='<div class="empty"><div class="empty-icon">📊</div><h3>Sin transacciones</h3><p>Empieza registrando una venta o gasto</p></div>';
     return;
   }
 
   const groups={}, order=[];
   all.forEach(tx=>{
     const k=daySort(tx.date);
-    if(!groups[k]){ groups[k]={label:dayKey(tx.date),items:[],inc:0,exp:0}; order.push(k); }
+    if(!groups[k]){ groups[k]={label:dayKey(tx.date),items:[],inc:0,exp:0}; order.push(k) }
     groups[k].items.push(tx);
-    if(tx.type==='income') groups[k].inc+=tx.amount;
+    if(tx.type==='sale') groups[k].inc+=tx.amount;
     else groups[k].exp+=tx.amount;
   });
 
   order.forEach(k=>{
     const g=groups[k];
-    const grp=document.createElement('div'); grp.className='day-group';
     const net=g.inc-g.exp;
-    grp.innerHTML=`<div class="day-label"><span>${g.label}</span><span style="font-family:'DM Mono',monospace;font-size:11px;color:${net>=0?'var(--green)':'var(--red)'}">${net>=0?'+':''}${fmt(net)}</span></div>`;
+    const blk=document.createElement('div'); blk.className='day-block';
+    blk.innerHTML=`
+      <div class="day-hdr">
+        <span class="day-name">${g.label}</span>
+        <span class="day-net" style="color:${net>=0?'var(--green-l)':'var(--red-l)'}">${net>=0?'+':''}${fmt(net)}</span>
+      </div>`;
     g.items.forEach(tx=>{
-      const it=document.createElement('div'); it.className='tx-item';
+      const icons={sale:'💰',exp:'💸',buy:'📥'};
+      const cls={sale:'sale',exp:'exp',buy:'buy'};
+      const amtCls={sale:'pos',exp:'neg',buy:'neu'};
+      const sign={sale:'+',exp:'-',buy:'-'};
+      const it=document.createElement('div'); it.className='feed-item';
       it.innerHTML=`
-        <div class="tx-icon ${tx.type}">${tx.type==='income'?'💰':'💸'}</div>
-        <div class="tx-info">
-          <div class="tx-desc">${tx.desc}</div>
-          <div class="tx-meta">${fmtTime(tx.date)}${tx.profit!==undefined?' · <span class="profit-chip">⚡ Gan '+fmt(tx.profit)+'</span>':''}</div>
+        <div class="feed-icon ${cls[tx.type]}">${icons[tx.type]}</div>
+        <div class="feed-info">
+          <div class="feed-desc">${tx.desc}</div>
+          <div class="feed-meta">${fmtT(tx.date)}${tx.profit!==undefined?' · <span class="chip chip-yellow" style="font-size:10px;padding:2px 6px">⚡ '+fmt(tx.profit)+'</span>':''}</div>
         </div>
-        <div class="tx-amount ${tx.type}">${tx.type==='income'?'+':'-'}${fmt(tx.amount)}</div>`;
-      grp.appendChild(it);
+        <div class="feed-amount ${amtCls[tx.type]}">${sign[tx.type]}${fmt(tx.amount)}</div>`;
+      blk.appendChild(it);
     });
-    container.appendChild(grp);
+    container.appendChild(blk);
   });
 }
 
-// CLOSE ON OVERLAY TAP
-document.getElementById('sale-modal').addEventListener('click',function(e){ if(e.target===this) closeSaleModal(); });
-document.getElementById('expense-modal').addEventListener('click',function(e){ if(e.target===this) closeExpenseModal(); });
+/* ═══════════════════════════════════════════
+   EXPORT / IMPORT / RESET
+═══════════════════════════════════════════ */
+function exportData(){
+  const data={ version:3, exported:new Date().toISOString(), products, sales, expenses, purchases, packs };
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  const date=new Date().toLocaleDateString('es-CL',{day:'2-digit',month:'2-digit',year:'numeric'}).replace(/\//g,'-');
+  a.href=url; a.download=`fincontrol-backup-${date}.json`;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+  toast('📤 Backup exportado','ok');
+}
 
-// INIT
+function importData(e){
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      const data=JSON.parse(ev.target.result);
+      if(!data.products||!Array.isArray(data.products)) throw new Error('Formato inválido');
+      confirmAction(`¿Importar datos de ${fmtD(data.exported||new Date())}? Se reemplazarán los datos actuales.`,()=>{
+        products  = data.products  || [];
+        sales     = data.sales     || [];
+        expenses  = data.expenses  || [];
+        purchases = data.purchases || [];
+        packs     = data.packs     || [];
+        persist();
+        toast('📥 Datos importados','ok');
+        goTo('home');
+      });
+    } catch(err){
+      toast('Error al leer el archivo','err');
+    }
+    e.target.value='';
+  };
+  reader.readAsText(file);
+}
+
+function confirmReset(){
+  confirmAction('¿Borrar TODOS los datos? Esta acción no se puede deshacer.', ()=>{
+    confirmAction('¿Estás seguro? Se perderán todas las ventas, gastos y productos.', ()=>{
+      products=[]; sales=[]; expenses=[]; purchases=[]; packs=[];
+      persist();
+      toast('Datos eliminados');
+      goTo('home');
+    });
+  });
+}
+
+/* ═══════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════ */
 renderHome();
 </script>
 </body>
