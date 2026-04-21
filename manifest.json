@@ -2,7 +2,7 @@
   "name": "FinControl - Control Financiero",
   "short_name": "FinControl",
   "description": "App personal de control financiero con inventario y ventas",
-  "start_url": "./finanzas.html",
+  "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0F172A",
